@@ -297,6 +297,55 @@
 </style>
 </head>
 <body>
+<style>
+  .site-nav {
+    background: #111122;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow-x: auto;
+  }
+  .site-nav .nav-brand {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: #00aaff;
+    text-transform: uppercase;
+    padding: 18px 0;
+    margin-right: 28px;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .site-nav a.nav-link {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8888aa;
+    text-decoration: none;
+    padding: 20px 16px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+    position: relative;
+    top: 1px;
+  }
+  .site-nav a.nav-link:hover { color: #ffffff; }
+  .site-nav a.nav-link.active { color: #00aaff; border-bottom-color: #00aaff; }
+</style>
+<nav class="site-nav">
+  <a class="nav-brand" href="index.html">Tecmilenio IA</a>
+  <a class="nav-link" href="index.html">Comparativo</a>
+  <a class="nav-link" href="ml_taller_tecmilenio.html">Machine Learning</a>
+  <a class="nav-link active" href="tarjetas_debate_ml.html">Tarjetas de debate</a>
+</nav>
+
 
 <div class="page-header">
   <div class="kicker">Máster IA Tecmilenio — Certificado 2</div>
