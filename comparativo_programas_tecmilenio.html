@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Cuál programa es para ti? — Tecmilenio</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --card: #1a1a26;
+    --paper: #1a1a26;
+    --ink: #e8e8f0;
+    --ia: #00e5ff;
+    --ia-light: rgba(0,229,255,0.12);
+    --mgti: #ff4d6d;
+    --mgti-light: rgba(255,77,109,0.12);
+    --both: #b8ff5e;
+    --both-light: rgba(184,255,94,0.12);
+    --text: #e8e8f0;
+    --muted: #b0b0cc;
+    --rule: rgba(255,255,255,0.07);
+    --rule-dark: rgba(255,255,255,0.07);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    background-image:
+      linear-gradient(var(--rule) 1px, transparent 1px),
+      linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 64px 48px 48px;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,229,255,0.07), transparent 70%);
+    top: -200px; right: -100px;
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,77,109,0.06), transparent 70%);
+    bottom: -150px; left: 100px;
+    pointer-events: none;
+  }
+  .hero-kicker {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--ia);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3rem, 7vw, 6rem);
+    
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+  .hero h1 .ia { color: var(--ia); }
+  .hero h1 .mgti { color: var(--mgti); }
+  .hero-sub {
+    font-size: 1rem;
+    color: var(--muted);
+    max-width: 520px;
+    line-height: 1.6;
+  }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    gap: 0;
+    padding: 0 48px;
+    border-bottom: 1px solid var(--rule);
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 50;
+  }
+  .tab {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 20px 28px;
+    border: none;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    position: relative;
+    top: 1px;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--ia); border-bottom-color: var(--ia); }
+
+  /* ── CONTENT SECTIONS ── */
+  .section { display: none; padding: 48px; }
+  .section.active { display: block; }
+
+  /* ── SIDE BY SIDE ── */
+  .side-by-side {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  /* ── PROGRAM CARD ── */
+  .prog-card {
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+  .prog-card-bar { height: 6px; }
+  .prog-card.ia .prog-card-bar { background: var(--ia); }
+  .prog-card.mgti .prog-card-bar { background: var(--mgti); }
+  .prog-card-inner { padding: 28px 32px; }
+  .prog-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+  .ia .prog-tag { background: var(--ia-light); color: var(--ia); }
+  .mgti .prog-tag { background: var(--mgti-light); color: var(--mgti); }
+  .prog-card h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 0.03em;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .prog-card p {
+    font-size: 0.88rem;
+    line-height: 1.65;
+    color: #b0b0c8;
+    margin-bottom: 20px;
+  }
+  .prog-divider { height: 1px; background: var(--rule-dark); margin: 20px 0; }
+
+  /* ── PILL TAGS ── */
+  .pill-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--rule-dark);
+    color: var(--muted);
+  }
+  .pill.ia-fill { background: var(--ia-light); border-color: var(--ia); color: var(--ia); }
+  .pill.mgti-fill { background: var(--mgti-light); border-color: var(--mgti); color: var(--mgti); }
+
+  /* ── STAT ROW ── */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--rule-dark);
+    margin-top: 20px;
+  }
+  .stat-cell {
+    background: var(--card);
+    padding: 14px 16px;
+    text-align: center;
+  }
+  .stat-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.6rem;
+    color: var(--text);
+    line-height: 1;
+  }
+  .stat-lbl { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+
+  /* ── COMPARISON TABLE ── */
+  .comp-table {
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+  .comp-row {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr;
+    border-bottom: 1px solid var(--rule-dark);
+  }
+  .comp-row:last-child { border-bottom: none; }
+  .comp-row.header { background: var(--surface); }
+  .comp-cell {
+    padding: 14px 20px;
+    font-size: 0.88rem;
+    color: #b0b0c8;
+    border-right: 1px solid var(--rule-dark);
+  }
+  .comp-cell:last-child { border-right: none; }
+  .comp-row.header .comp-cell { color: var(--muted); 
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 12px 20px;
+  }
+  .comp-row.header .comp-cell.ia-h { color: var(--ia); }
+  .comp-row.header .comp-cell.mgti-h { color: var(--mgti); }
+  .comp-cell .aspect {
+    font-weight: 700;
+    color: var(--text);
+    font-size: 0.82rem;
+    margin-bottom: 2px;
+  }
+  .comp-cell .detail { font-size: 0.78rem; color: var(--muted); }
+  .check-ia { color: var(--ia); font-weight: 700; }
+  .check-mgti { color: var(--mgti); font-weight: 700; }
+  .check-both { color: var(--both); font-weight: 700; }
+
+  /* ── WHO IS IT FOR ── */
+  .who-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .who-card {
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+  .who-card .who-bar { height: 6px; }
+  .who-card.ia .who-bar { background: var(--ia); }
+  .who-card.mgti .who-bar { background: var(--mgti); }
+  .who-inner { padding: 24px 28px; }
+  .who-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.03em;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+  .who-list { list-style: none; }
+  .who-list li {
+    display: flex;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: #b0b0c8;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--rule-dark);
+    line-height: 1.5;
+  }
+  .who-list li:last-child { border-bottom: none; }
+  .who-icon { flex-shrink: 0; font-size: 1rem; }
+
+  /* ── QUIZ ── */
+  .quiz-wrap {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .quiz-intro {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .quiz-intro h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.5rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+  }
+  .quiz-intro p { font-size: 0.95rem; color: var(--muted); }
+
+  .quiz-card {
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px var(--rule);
+    margin-bottom: 24px;
+  }
+  .quiz-q-bar { height: 4px; background: var(--muted); }
+  .quiz-q-inner { padding: 28px 32px; }
+  .quiz-q-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .quiz-q-text {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 0.03em;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 20px;
+  }
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+  .quiz-opt {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 14px 16px;
+    border: 1.5px solid var(--rule-dark);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--surface);
+  }
+  .quiz-opt:hover { border-color: var(--muted); background: var(--card); }
+  .quiz-opt.selected-ia { border-color: var(--ia); background: var(--ia-light); }
+  .quiz-opt.selected-mgti { border-color: var(--mgti); background: var(--mgti-light); }
+  .quiz-opt.selected-both { border-color: var(--both); background: var(--both-light); }
+  .opt-letter {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--muted);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .quiz-opt.selected-ia .opt-letter { color: var(--ia); }
+  .quiz-opt.selected-mgti .opt-letter { color: var(--mgti); }
+  .quiz-opt.selected-both .opt-letter { color: var(--both); }
+  .opt-text { font-size: 0.88rem; color: var(--text); line-height: 1.5; }
+
+  /* ── RESULT ── */
+  #quiz-result { display: none; }
+  .result-card {
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px var(--rule);
+    text-align: center;
+    padding: 40px 32px;
+  }
+  .result-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+  .result-badge.ia { background: var(--ia-light); color: var(--ia); }
+  .result-badge.mgti { background: var(--mgti-light); color: var(--mgti); }
+  .result-badge.both { background: var(--both-light); color: var(--both); }
+  .result-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.5rem;
+    letter-spacing: 0.03em;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .result-desc {
+    font-size: 0.95rem;
+    color: #b0b0c8;
+    line-height: 1.7;
+    max-width: 500px;
+    margin: 0 auto 24px;
+  }
+  #reset-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border: 1.5px solid var(--rule-dark);
+    border-radius: 6px;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  #reset-btn:hover { background: var(--surface); color: var(--paper); border-color: var(--text); }
+
+  /* ── SCORE BAR ── */
+  .score-bars { margin: 24px 0; }
+  .score-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .score-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    width: 60px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .score-label.ia { color: var(--ia); }
+  .score-label.mgti { color: var(--mgti); }
+  .score-track {
+    flex: 1;
+    height: 8px;
+    background: rgba(26,18,8,0.08);
+    border-radius: 0;
+    overflow: hidden;
+  }
+  .score-fill {
+    height: 100%;
+    transition: width 0.6s cubic-bezier(0.16,1,0.3,1);
+  }
+  .score-fill.ia { background: var(--ia); }
+  .score-fill.mgti { background: var(--mgti); }
+  .score-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    width: 24px;
+    color: var(--text);
+  }
+
+  /* ── SECTIONS LABEL ── */
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* ── SIMILARITIES ── */
+  .sim-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .sim-item {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 20px;
+    border-top: 3px solid var(--both);
+  }
+  .sim-icon { font-size: 1.5rem; margin-bottom: 10px; }
+  .sim-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .sim-text { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+
+  @media (max-width: 768px) {
+    .side-by-side, .who-grid, .sim-grid { grid-template-columns: 1fr; }
+    .comp-row { grid-template-columns: 1fr; }
+    .hero { padding: 40px 24px 32px; }
+    .tabs { padding: 0 24px; overflow-x: auto; }
+    .section { padding: 32px 24px; }
+    .tab { padding: 16px 18px; white-space: nowrap; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-kicker">Universidad Tecmilenio — Comparativo de Posgrados</div>
+  <h1><span class="ia">Máster IA</span><br>vs<br><span class="mgti">Maestría MGTI</span></h1>
+  <p class="hero-sub">Dos programas distintos para dos perfiles distintos. Aquí está todo lo que necesitas saber para elegir.</p>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="showTab('programas')">Los programas</button>
+  <button class="tab" onclick="showTab('comparativo')">Comparativo</button>
+  <button class="tab" onclick="showTab('para-quien')">¿Para quién?</button>
+  <button class="tab" onclick="showTab('quiz')">Test rápido</button>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 1: LOS PROGRAMAS
+══════════════════════════════════════════════ -->
+<div class="section active" id="tab-programas">
+  <div class="section-label">Ficha de cada programa</div>
+  <div class="side-by-side">
+
+    <!-- MÁSTER IA -->
+    <div class="prog-card ia">
+      <div class="prog-card-bar"></div>
+      <div class="prog-card-inner">
+        <span class="prog-tag">Máster</span>
+        <h2>Inteligencia<br>Artificial</h2>
+        <p>Programa técnico-práctico orientado a construir y programar sistemas de IA. Aprenderás a crear modelos, entrenarlos y desplegarlos. El foco es el <em>hacer</em>.</p>
+        <div class="prog-divider"></div>
+        <div style="margin-bottom:12px;">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.15em;color:var(--muted);margin-bottom:8px;">5 CERTIFICADOS</div>
+          <div class="pill-row">
+            <span class="pill ia-fill">Fundamentos de IA</span>
+            <span class="pill ia-fill">Machine Learning</span>
+            <span class="pill ia-fill">Deep Learning</span>
+            <span class="pill ia-fill">PLN + Visión Computacional</span>
+            <span class="pill ia-fill">Gestión de Proyectos IA</span>
+          </div>
+        </div>
+        <div class="prog-divider"></div>
+        <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.15em;color:var(--muted);margin-bottom:8px;">TECNOLOGÍAS QUE VERÁS</div>
+        <div class="pill-row">
+          <span class="pill">Python</span>
+          <span class="pill">TensorFlow / Keras</span>
+          <span class="pill">Scikit-learn</span>
+          <span class="pill">NLP</span>
+          <span class="pill">Computer Vision</span>
+          <span class="pill">Redes Neuronales</span>
+        </div>
+        <div class="stat-row">
+          <div class="stat-cell">
+            <div class="stat-val">5</div>
+            <div class="stat-lbl">Certificados</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-val">15</div>
+            <div class="stat-lbl">Módulos</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-val">100%</div>
+            <div class="stat-lbl">Técnico</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MGTI -->
+    <div class="prog-card mgti">
+      <div class="prog-card-bar"></div>
+      <div class="prog-card-inner">
+        <span class="prog-tag">Maestría</span>
+        <h2>Gestión de<br>Tecnologías de la<br>Información</h2>
+        <p>Programa estratégico-gerencial para liderar áreas de TI en organizaciones. Aprenderás a tomar decisiones, gestionar presupuestos y transformar digitalmente empresas. El foco es el <em>dirigir</em>.</p>
+        <div class="prog-divider"></div>
+        <div style="margin-bottom:12px;">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.15em;color:var(--muted);margin-bottom:8px;">3 CERTIFICADOS</div>
+          <div class="pill-row">
+            <span class="pill mgti-fill">Gestión del Conocimiento</span>
+            <span class="pill mgti-fill">Soluciones Empresariales de TI</span>
+            <span class="pill mgti-fill">Seguridad de Bases de Datos</span>
+          </div>
+        </div>
+        <div class="prog-divider"></div>
+        <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.15em;color:var(--muted);margin-bottom:8px;">MATERIAS CLAVE</div>
+        <div class="pill-row">
+          <span class="pill">Arquitectura de Sistemas</span>
+          <span class="pill">Administración de Proyectos TI</span>
+          <span class="pill">Seguridad Informática</span>
+          <span class="pill">Estrategia Digital</span>
+          <span class="pill">Gestión Financiera</span>
+        </div>
+        <div class="stat-row">
+          <div class="stat-cell">
+            <div class="stat-val">3</div>
+            <div class="stat-lbl">Certificados</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-val">15</div>
+            <div class="stat-lbl">Materias</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-val">RVOE</div>
+            <div class="stat-lbl">SEP oficial</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIMILITUDES -->
+  <div class="section-label" style="margin-top:40px;">Lo que tienen en común</div>
+  <div class="sim-grid">
+    <div class="sim-item">
+      <div class="sim-icon">🎓</div>
+      <div class="sim-title">Tecmilenio</div>
+      <div class="sim-text">Ambos son posgrados de la misma universidad, con el respaldo institucional y la red de egresados de Tecmilenio.</div>
+    </div>
+    <div class="sim-item">
+      <div class="sim-icon">📜</div>
+      <div class="sim-title">Certificaciones</div>
+      <div class="sim-text">Los dos otorgan certificados e insignias digitales que puedes compartir en LinkedIn para validar tus competencias.</div>
+    </div>
+    <div class="sim-item">
+      <div class="sim-icon">🌐</div>
+      <div class="sim-title">Modalidad flexible</div>
+      <div class="sim-text">Ambos tienen formato virtual con experiencias presenciales opcionales. Puedes estudiar desde donde estés.</div>
+    </div>
+    <div class="sim-item">
+      <div class="sim-icon">🤝</div>
+      <div class="sim-title">Gestión de proyectos</div>
+      <div class="sim-text">Los dos incluyen administración de proyectos de TI, aunque desde enfoques distintos: uno técnico, el otro estratégico.</div>
+    </div>
+    <div class="sim-item">
+      <div class="sim-icon">🔐</div>
+      <div class="sim-title">Ética y seguridad</div>
+      <div class="sim-text">Ambos abordan ética en TI y seguridad, aunque el Máster IA lo enfoca específicamente en sistemas inteligentes.</div>
+    </div>
+    <div class="sim-item">
+      <div class="sim-icon">🏭</div>
+      <div class="sim-title">Cocreado con industria</div>
+      <div class="sim-text">Los planes de estudio de ambos programas están diseñados con participación de empresas y expertos del sector.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 2: COMPARATIVO
+══════════════════════════════════════════════ -->
+<div class="section" id="tab-comparativo">
+  <div class="section-label">Diferencias punto a punto</div>
+  <div class="comp-table">
+    <div class="comp-row header">
+      <div class="comp-cell">Aspecto</div>
+      <div class="comp-cell ia-h">Máster IA</div>
+      <div class="comp-cell mgti-h">Maestría MGTI</div>
+    </div>
+    <div class="comp-row">
+      <div class="comp-cell"><div class="aspect">Tipo de programa</div><div class="detail">Nivel y reconocimiento</div></div>
+      <div class="comp-cell"><span class="check-ia">Máster</span> — con certificaciones externas por módulo</div>
+      <div class="comp-cell"><span class="check-mgti">Maestría</span> — con RVOE oficial de la SEP</div>
+    </div>
+    <div class="comp-row">
+      <div class="comp-cell"><div class="aspect">Enfoque principal</div><div class="detail">¿Qué aprenderás a hacer?</div></div>
+      <div class="comp-cell"><span class="check-ia">Construir</span> sistemas de IA: modelos, algoritmos, aplicaciones reales</div>
+      <div class="comp-cell"><span class="check-mgti">Dirigir</span> áreas de TI: estrategia, presupuesto, equipos, decisiones</div>
+    </div>
+    <div class="comp-row">
+      <div class="comp-cell"><div class="aspect">Perfil de entrada</div><div class="detail">¿Quién debería aplicar?</div></div>
+      <div class="comp-cell">Ingenieros, desarrolladores, científicos de datos con base técnica</div>
+      <div class="comp-cell">Profesionales de cualquier área que gestionan o quieren gestionar TI</div>
+    </div>
+    <div class="comp-row">
+      <div class="comp-cell"><div class="aspect">¿Se programa?</div><div class="detail">Nivel de código</div></div>
+      <div class="comp-cell"><span class="check-ia">✓ Sí</span> — Python, ML libs, redes neuronales, proyectos de código</div>
+      <div class="comp-cell"><span class="check-mgti">Poco</span> — el foco está en arquitectura y estrategia, no en desarrollo</div>
+    </div>
+    <div class="comp-row">
+      <div class="comp-cell"><div class="aspect">Salida laboral</div><div class="detail">Roles típicos al egresar</div></div>
+      <div class="comp-cell">ML Engineer, Data Scientist, AI Developer, Research Engineer</div>
+      <div class="comp-cell">CTO, Director de TI, IT Manager, Consultor de Transformación Digital</div>
+    </div>
+    <div class="comp-row">
+      <div class="comp-cell"><div class="aspect">Finanzas / Negocios</div><div class="detail">¿Incluye materias de negocio?</div></div>
+      <div class="comp-cell"><span style="color:var(--muted);">Mínimo</span> — solo en el certificado de gestión de proyectos</div>
+      <div class="comp-cell"><span class="check-mgti">✓ Sí</span> — Contabilidad, evaluación de inversiones, administración financiera</div>
+    </div>
+    <div class="comp-row">
+      <div class="comp-cell"><div class="aspect">Seguridad informática</div><div class="detail">¿La cubre a profundidad?</div></div>
+      <div class="comp-cell"><span style="color:var(--muted);">Tangencial</span> — en el módulo de ética de IA</div>
+      <div class="comp-cell"><span class="check-mgti">✓ Sí</span> — Certificado completo en Seguridad de Bases de Datos</div>
+    </div>
+    <div class="comp-row">
+      <div class="comp-cell"><div class="aspect">Deep Learning / NLP</div><div class="detail">¿Incluye IA avanzada?</div></div>
+      <div class="comp-cell"><span class="check-ia">✓ Sí</span> — Redes neuronales, Deep Learning, NLP, Visión Computacional</div>
+      <div class="comp-cell"><span style="color:var(--muted);">No</span> — No cubre algoritmos ni modelos de IA a profundidad</div>
+    </div>
+    <div class="comp-row">
+      <div class="comp-cell"><div class="aspect">Proyecto final</div><div class="detail">¿Cómo culmina?</div></div>
+      <div class="comp-cell">Proyectos de aprendizaje por módulo + proyecto integrador de IA</div>
+      <div class="comp-cell">Proyecto de Campo aplicado a una organización real</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 3: ¿PARA QUIÉN?
+══════════════════════════════════════════════ -->
+<div class="section" id="tab-para-quien">
+  <div class="section-label">Perfil ideal de cada programa</div>
+  <div class="who-grid">
+    <div class="who-card ia">
+      <div class="who-bar"></div>
+      <div class="who-inner">
+        <div class="who-title">El Máster IA es para ti si…</div>
+        <ul class="who-list">
+          <li><span class="who-icon">💻</span>Tienes base en programación y quieres especializarte en IA</li>
+          <li><span class="who-icon">📊</span>Trabajas con datos y quieres construir modelos predictivos</li>
+          <li><span class="who-icon">🚀</span>Quieres crear productos o servicios basados en inteligencia artificial</li>
+          <li><span class="who-icon">🔬</span>Te interesa investigar o experimentar con algoritmos de ML y Deep Learning</li>
+          <li><span class="who-icon">🌐</span>Buscas roles técnicos de alto perfil: ML Engineer, AI Researcher</li>
+          <li><span class="who-icon">🏗️</span>Quieres entender <em>cómo funciona</em> la IA, no solo usarla</li>
+        </ul>
+      </div>
+    </div>
+    <div class="who-card mgti">
+      <div class="who-bar"></div>
+      <div class="who-inner">
+        <div class="who-title">La Maestría MGTI es para ti si…</div>
+        <ul class="who-list">
+          <li><span class="who-icon">🏢</span>Lideras o quieres liderar un área de TI en una empresa</li>
+          <li><span class="who-icon">💰</span>Necesitas tomar decisiones de inversión en tecnología con criterio financiero</li>
+          <li><span class="who-icon">🔐</span>Te interesa la seguridad informática y la gestión de riesgos tecnológicos</li>
+          <li><span class="who-icon">🤝</span>Coordinas equipos multidisciplinarios de tecnología y negocio</li>
+          <li><span class="who-icon">📋</span>Buscas roles como CTO, IT Manager o Director de Transformación Digital</li>
+          <li><span class="who-icon">🎓</span>Quieres un título oficial con RVOE para avanzar en carrera corporativa</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESUMEN VISUAL -->
+  <div style="margin-top:40px;">
+    <div class="section-label">En una frase</div>
+    <div class="side-by-side">
+      <div style="background:var(--card);border-radius:4px;padding:28px 32px;box-shadow:4px 4px 0 rgba(0,0,0,0.5);border-top:2px solid var(--ia);">
+        <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.2em;color:var(--ia);margin-bottom:12px;">MÁSTER IA</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.8rem;letter-spacing:0.03em;color:var(--text);line-height:1.2;">"Quiero construir<br>la IA del futuro"</div>
+        <div style="font-size:0.85rem;color:var(--muted);margin-top:12px;line-height:1.6;">Técnico, creador, experimentador. Sales a programar sistemas inteligentes.</div>
+      </div>
+      <div style="background:var(--card);border-radius:4px;padding:28px 32px;box-shadow:4px 4px 0 rgba(0,0,0,0.5);border-top:2px solid var(--mgti);">
+        <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.2em;color:var(--mgti);margin-bottom:12px;">MAESTRÍA MGTI</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.8rem;letter-spacing:0.03em;color:var(--text);line-height:1.2;">"Quiero dirigir<br>el departamento de TI"</div>
+        <div style="font-size:0.85rem;color:var(--muted);margin-top:12px;line-height:1.6;">Estratégico, gestor, líder. Sales a tomar decisiones tecnológicas a nivel ejecutivo.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 4: QUIZ
+══════════════════════════════════════════════ -->
+<div class="section" id="tab-quiz">
+  <div class="quiz-wrap">
+    <div class="quiz-intro">
+      <h2>¿Cuál es tu programa?</h2>
+      <p>Responde 5 preguntas y te decimos cuál se adapta mejor a tu perfil.</p>
+    </div>
+
+    <div id="quiz-questions">
+      <!-- Q1 -->
+      <div class="quiz-card" id="q1">
+        <div class="quiz-q-bar"></div>
+        <div class="quiz-q-inner">
+          <div class="quiz-q-num">Pregunta 01 de 05</div>
+          <div class="quiz-q-text">¿Cómo describes tu relación con el código?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="select(this,'ia')" data-val="ia">
+              <span class="opt-letter">A</span>
+              <span class="opt-text">Programo regularmente y me siento cómodo con Python u otros lenguajes</span>
+            </div>
+            <div class="quiz-opt" onclick="select(this,'mgti')" data-val="mgti">
+              <span class="opt-letter">B</span>
+              <span class="opt-text">Entiendo la tecnología pero mi trabajo no es escribir código</span>
+            </div>
+            <div class="quiz-opt" onclick="select(this,'both')" data-val="both">
+              <span class="opt-letter">C</span>
+              <span class="opt-text">Tengo algo de experiencia técnica y también gestión de equipos</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="quiz-card" id="q2">
+        <div class="quiz-q-bar"></div>
+        <div class="quiz-q-inner">
+          <div class="quiz-q-num">Pregunta 02 de 05</div>
+          <div class="quiz-q-text">¿Cuál es tu meta laboral en los próximos 3 años?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="select(this,'ia')" data-val="ia">
+              <span class="opt-letter">A</span>
+              <span class="opt-text">Ser ML Engineer, Data Scientist o AI Developer en una empresa tech</span>
+            </div>
+            <div class="quiz-opt" onclick="select(this,'mgti')" data-val="mgti">
+              <span class="opt-letter">B</span>
+              <span class="opt-text">Llegar a Director de TI, CTO o gerente de transformación digital</span>
+            </div>
+            <div class="quiz-opt" onclick="select(this,'both')" data-val="both">
+              <span class="opt-letter">C</span>
+              <span class="opt-text">Liderar proyectos tecnológicos con componentes de IA y gestión</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="quiz-card" id="q3">
+        <div class="quiz-q-bar"></div>
+        <div class="quiz-q-inner">
+          <div class="quiz-q-num">Pregunta 03 de 05</div>
+          <div class="quiz-q-text">Cuando hay un problema tecnológico en tu empresa, ¿cuál es tu instinto?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="select(this,'ia')" data-val="ia">
+              <span class="opt-letter">A</span>
+              <span class="opt-text">Quiero entender el problema a fondo y construir la solución técnica</span>
+            </div>
+            <div class="quiz-opt" onclick="select(this,'mgti')" data-val="mgti">
+              <span class="opt-letter">B</span>
+              <span class="opt-text">Quiero coordinar al equipo correcto y gestionar la solución</span>
+            </div>
+            <div class="quiz-opt" onclick="select(this,'both')" data-val="both">
+              <span class="opt-letter">C</span>
+              <span class="opt-text">Depende — a veces me meto al código y a veces organizo el equipo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="quiz-card" id="q4">
+        <div class="quiz-q-bar"></div>
+        <div class="quiz-q-inner">
+          <div class="quiz-q-num">Pregunta 04 de 05</div>
+          <div class="quiz-q-text">¿Qué te emociona más aprender?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="select(this,'ia')" data-val="ia">
+              <span class="opt-letter">A</span>
+              <span class="opt-text">Redes neuronales, NLP, visión computacional, modelos de ML</span>
+            </div>
+            <div class="quiz-opt" onclick="select(this,'mgti')" data-val="mgti">
+              <span class="opt-letter">B</span>
+              <span class="opt-text">Estrategia digital, seguridad, gestión de presupuestos de TI</span>
+            </div>
+            <div class="quiz-opt" onclick="select(this,'both')" data-val="both">
+              <span class="opt-letter">C</span>
+              <span class="opt-text">Cómo implementar proyectos de IA en organizaciones reales</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q5 -->
+      <div class="quiz-card" id="q5">
+        <div class="quiz-q-bar"></div>
+        <div class="quiz-q-inner">
+          <div class="quiz-q-num">Pregunta 05 de 05</div>
+          <div class="quiz-q-text">¿Cómo describes tu perfil actual?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="select(this,'ia')" data-val="ia">
+              <span class="opt-letter">A</span>
+              <span class="opt-text">Ingeniero o desarrollador que quiere profundizar en IA y datos</span>
+            </div>
+            <div class="quiz-opt" onclick="select(this,'mgti')" data-val="mgti">
+              <span class="opt-letter">B</span>
+              <span class="opt-text">Profesional de negocios, administración o TI general que quiere subir a la dirección</span>
+            </div>
+            <div class="quiz-opt" onclick="select(this,'both')" data-val="both">
+              <span class="opt-letter">C</span>
+              <span class="opt-text">Perfil mixto: técnico con aspiraciones de liderazgo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULT -->
+    <div id="quiz-result">
+      <div class="result-card">
+        <span class="result-badge" id="result-badge"></span>
+        <div class="result-title" id="result-title"></div>
+        <div class="score-bars">
+          <div class="score-row">
+            <span class="score-label ia">Máster IA</span>
+            <div class="score-track"><div class="score-fill ia" id="bar-ia" style="width:0%"></div></div>
+            <span class="score-num" id="num-ia"></span>
+          </div>
+          <div class="score-row">
+            <span class="score-label mgti">MGTI</span>
+            <div class="score-track"><div class="score-fill mgti" id="bar-mgti" style="width:0%"></div></div>
+            <span class="score-num" id="num-mgti"></span>
+          </div>
+        </div>
+        <div class="result-desc" id="result-desc"></div>
+        <button id="reset-btn" onclick="resetQuiz()">Volver a intentar</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ── TABS ──
+  function showTab(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  // ── QUIZ ──
+  const answers = { ia: 0, mgti: 0, both: 0 };
+  const answered = new Set();
+
+  function select(el, val) {
+    const card = el.closest('.quiz-card');
+    const qid = card.id;
+    if (answered.has(qid)) {
+      // deselect previous
+      card.querySelectorAll('.quiz-opt').forEach(o => {
+        o.classList.remove('selected-ia','selected-mgti','selected-both');
+      });
+      const prev = answered.get ? answered.get(qid) : null;
+    }
+    card.querySelectorAll('.quiz-opt').forEach(o => {
+      o.classList.remove('selected-ia','selected-mgti','selected-both');
+    });
+    el.classList.add('selected-' + val);
+    answered.add(qid);
+    // store
+    el.closest('.quiz-card').dataset.answer = val;
+
+    // check if all answered
+    const allCards = document.querySelectorAll('#quiz-questions .quiz-card');
+    let iaCount = 0, mgtiCount = 0, bothCount = 0;
+    let allDone = true;
+    allCards.forEach(c => {
+      if (!c.dataset.answer) { allDone = false; return; }
+      if (c.dataset.answer === 'ia') iaCount++;
+      if (c.dataset.answer === 'mgti') mgtiCount++;
+      if (c.dataset.answer === 'both') bothCount++;
+    });
+
+    if (allDone) {
+      setTimeout(() => showResult(iaCount, mgtiCount, bothCount), 400);
+    }
+  }
+
+  function showResult(ia, mgti, both) {
+    const total = ia + mgti + both;
+    const iaScore = ia + (both * 0.5);
+    const mgtiScore = mgti + (both * 0.5);
+    const iaPct = Math.round((iaScore / total) * 100);
+    const mgtiPct = Math.round((mgtiScore / total) * 100);
+
+    document.getElementById('quiz-questions').style.display = 'none';
+    const res = document.getElementById('quiz-result');
+    res.style.display = 'block';
+
+    setTimeout(() => {
+      document.getElementById('bar-ia').style.width = iaPct + '%';
+      document.getElementById('bar-mgti').style.width = mgtiPct + '%';
+      document.getElementById('num-ia').textContent = iaPct + '%';
+      document.getElementById('num-mgti').textContent = mgtiPct + '%';
+    }, 100);
+
+    const badge = document.getElementById('result-badge');
+    const title = document.getElementById('result-title');
+    const desc = document.getElementById('result-desc');
+
+    if (iaScore > mgtiScore + 1) {
+      badge.textContent = 'Tu programa: Máster IA';
+      badge.className = 'result-badge ia';
+      title.textContent = 'Eres perfil técnico — ve por la IA';
+      desc.textContent = 'Tu orientación es claramente hacia construir y programar sistemas inteligentes. El Máster en IA está hecho para alguien como tú: te dará las herramientas técnicas para desarrollar modelos reales, trabajar con datos y desplegar aplicaciones de IA en producción.';
+    } else if (mgtiScore > iaScore + 1) {
+      badge.textContent = 'Tu programa: Maestría MGTI';
+      badge.className = 'result-badge mgti';
+      title.textContent = 'Eres perfil directivo — ve por la MGTI';
+      desc.textContent = 'Tu perfil apunta hacia la gestión estratégica de la tecnología. La Maestría en Gestión de TI te dará las herramientas para tomar decisiones de alto nivel, liderar equipos y guiar la transformación digital de organizaciones. Además tiene RVOE oficial de la SEP.';
+    } else {
+      badge.textContent = 'Perfil mixto';
+      badge.className = 'result-badge both';
+      title.textContent = 'Tienes perfil híbrido — los dos te sirven';
+      desc.textContent = 'Tus respuestas muestran que combinas lo técnico con lo estratégico. Si quieres especializarte en IA aplicada, el Máster IA es tu ruta. Si buscas un título oficial para avanzar en carrera corporativa gestionando TI, la MGTI es la opción. Considera tus metas de los próximos 5 años para decidir.';
+    }
+  }
+
+  function resetQuiz() {
+    document.querySelectorAll('#quiz-questions .quiz-card').forEach(c => {
+      delete c.dataset.answer;
+      c.querySelectorAll('.quiz-opt').forEach(o => {
+        o.classList.remove('selected-ia','selected-mgti','selected-both');
+      });
+    });
+    document.getElementById('quiz-questions').style.display = 'block';
+    document.getElementById('quiz-result').style.display = 'none';
+    document.getElementById('bar-ia').style.width = '0%';
+    document.getElementById('bar-mgti').style.width = '0%';
+    answered.clear();
+  }
+</script>
+</body>
+</html>

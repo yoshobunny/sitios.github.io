@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tarjetas de Debate — ML en la Industria</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f5f0e8;
+    --ink: #1a1208;
+    --tech: #0057ff;
+    --mfg: #e05c00;
+    --health: #00a36b;
+    --muted: #7a7060;
+    --rule: rgba(26,18,8,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #2a2015;
+    font-family: 'DM Sans', sans-serif;
+    padding: 40px 24px;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .page-header {
+    text-align: center;
+    margin-bottom: 48px;
+    color: var(--paper);
+  }
+  .page-header .kicker {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: #a09070;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .page-header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+  .page-header p {
+    font-size: 1rem;
+    color: #c0b090;
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* INSTRUCTIONS BAR */
+  .instructions {
+    max-width: 960px;
+    margin: 0 auto 40px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 20px 28px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .instr-step { display: flex; align-items: flex-start; gap: 12px; }
+  .instr-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    color: #a09070;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .instr-text { font-size: 0.85rem; color: #c0b090; line-height: 1.5; }
+  .instr-text strong { color: var(--paper); }
+
+  /* CARDS GRID */
+  .cards-grid {
+    max-width: 960px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  /* CARD */
+  .card {
+    background: var(--paper);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.4), 8px 8px 0 rgba(0,0,0,0.15);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: default;
+  }
+  .card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.4), 12px 12px 0 rgba(0,0,0,0.15);
+  }
+
+  /* COLOR BAR TOP */
+  .card-bar {
+    height: 6px;
+  }
+  .card.tech .card-bar { background: var(--tech); }
+  .card.mfg .card-bar  { background: var(--mfg); }
+  .card.health .card-bar { background: var(--health); }
+
+  .card-inner { padding: 24px 28px 28px; }
+
+  /* HEADER ROW */
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+  .card-industry {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+    font-weight: 500;
+  }
+  .card.tech .card-industry  { background: #dde8ff; color: var(--tech); }
+  .card.mfg .card-industry   { background: #fde8d8; color: var(--mfg); }
+  .card.health .card-industry { background: #d8f4e8; color: var(--health); }
+
+  .card-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: var(--rule);
+    line-height: 1;
+  }
+
+  /* CASE TITLE */
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.03em;
+    color: var(--ink);
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+
+  /* SCENARIO */
+  .card-scenario {
+    font-size: 0.88rem;
+    line-height: 1.65;
+    color: #3a3020;
+    border-left: 2px solid var(--rule);
+    padding-left: 12px;
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+
+  /* DIVIDER */
+  .card-divider {
+    height: 1px;
+    background: var(--rule);
+    margin: 16px 0;
+  }
+
+  /* QUESTIONS */
+  .card-questions-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .card-questions { list-style: none; }
+  .card-questions li {
+    display: flex;
+    gap: 10px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+  .card-questions li:last-child { margin-bottom: 0; }
+  .q-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 500;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .card.tech .q-num  { color: var(--tech); }
+  .card.mfg .q-num   { color: var(--mfg); }
+  .card.health .q-num { color: var(--health); }
+
+  /* FOOTER */
+  .card-footer {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .card-algo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .algo-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    padding: 3px 8px;
+    border-radius: 2px;
+    border: 1px solid var(--rule);
+    color: var(--muted);
+    background: rgba(0,0,0,0.04);
+  }
+  .card-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    text-align: right;
+  }
+
+  /* BLANK CARD */
+  .card.blank {
+    background: transparent;
+    border: 2px dashed rgba(255,255,255,0.1);
+    box-shadow: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 320px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .card.blank:hover { border-color: rgba(255,255,255,0.25); }
+  .blank-inner { text-align: center; color: #a09070; }
+  .blank-inner .plus { font-size: 2.5rem; margin-bottom: 8px; }
+  .blank-inner p { font-size: 0.85rem; line-height: 1.5; }
+
+  /* TIMER SECTION */
+  .timer-section {
+    max-width: 960px;
+    margin: 40px auto 0;
+    background: var(--paper);
+    border-radius: 4px;
+    padding: 28px 32px;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.4);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 32px;
+    align-items: center;
+  }
+  .timer-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+  .timer-flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+  .t-step {
+    flex: 1;
+    text-align: center;
+    padding: 0 8px;
+  }
+  .t-min {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    line-height: 1;
+  }
+  .t-desc { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+  .t-arrow { color: var(--rule); font-size: 1.2rem; flex-shrink: 0; padding: 0 4px; }
+  .timer-total {
+    text-align: right;
+    border-left: 2px solid var(--rule);
+    padding-left: 24px;
+  }
+  .timer-total .big { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; line-height: 1; color: var(--ink); }
+  .timer-total .lbl { font-size: 0.78rem; color: var(--muted); }
+
+  @media print {
+    body { background: white; padding: 0; }
+    .page-header, .instructions, .timer-section { display: none; }
+    .cards-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; max-width: 100%; }
+    .card { box-shadow: none; border: 1px solid #ddd; }
+    .card.blank { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="kicker">Máster IA Tecmilenio — Certificado 2</div>
+  <h1>ML en la Industria Real</h1>
+  <p>Actividad de debate en parejas. Cada tarjeta plantea un caso real. Tienen 5 minutos para discutirlo y 2 minutos para presentarlo al grupo.</p>
+</div>
+
+<div class="instructions">
+  <div class="instr-step">
+    <div class="instr-num">01</div>
+    <div class="instr-text"><strong>Formen parejas</strong> y reciban su tarjeta. Léanla juntos en silencio — 1 minuto.</div>
+  </div>
+  <div class="instr-step">
+    <div class="instr-num">02</div>
+    <div class="instr-text"><strong>Discutan las 3 preguntas</strong> entre ustedes. No hay respuestas únicas — el debate es el punto.</div>
+  </div>
+  <div class="instr-step">
+    <div class="instr-num">03</div>
+    <div class="instr-text"><strong>Presenten 2 minutos</strong> al grupo. Cuéntenles el caso y su postura. El grupo puede rebatir.</div>
+  </div>
+</div>
+
+<div class="cards-grid">
+
+  <!-- TARJETA 1: TECH -->
+  <div class="card tech">
+    <div class="card-bar"></div>
+    <div class="card-inner">
+      <div class="card-header">
+        <span class="card-industry">Tecnología / SaaS</span>
+        <span class="card-num">01</span>
+      </div>
+      <div class="card-title">El modelo que<br>predice quién se va</div>
+      <p class="card-scenario">
+        Una startup de software en CDMX quiere predecir qué clientes cancelarán su suscripción antes de que lo hagan (churn). Tienen 2 años de datos: logins, uso de features, tickets de soporte, y si al final cancelaron o no.
+      </p>
+      <div class="card-divider"></div>
+      <div class="card-questions-label">Discutan esto</div>
+      <ul class="card-questions">
+        <li>
+          <span class="q-num">Q1</span>
+          <span>¿Qué tipo de ML usarían — supervisado o no supervisado? ¿Por qué?</span>
+        </li>
+        <li>
+          <span class="q-num">Q2</span>
+          <span>¿Qué features creen que serían más predictivas del churn?</span>
+        </li>
+        <li>
+          <span class="q-num">Q3</span>
+          <span>Si el modelo se equivoca y contactan a un cliente que no iba a cancelar, ¿qué pasa? ¿Y si no detectan a alguien que sí iba a irse?</span>
+        </li>
+      </ul>
+      <div class="card-footer">
+        <div class="card-algo">
+          <span class="algo-tag">Logistic Regression</span>
+          <span class="algo-tag">Decision Tree</span>
+          <span class="algo-tag">KNN</span>
+        </div>
+        <div class="card-time">5 min debate<br>2 min presenta</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TARJETA 2: MANUFACTURA -->
+  <div class="card mfg">
+    <div class="card-bar"></div>
+    <div class="card-inner">
+      <div class="card-header">
+        <span class="card-industry">Manufactura / Industria</span>
+        <span class="card-num">02</span>
+      </div>
+      <div class="card-title">La máquina que<br>avisa antes de fallar</div>
+      <p class="card-scenario">
+        Una planta automotriz en Monterrey tiene sensores en sus máquinas CNC que registran temperatura, vibración y presión cada segundo. Quieren detectar patrones que preceden a una falla antes de que ocurra.
+      </p>
+      <div class="card-divider"></div>
+      <div class="card-questions-label">Discutan esto</div>
+      <ul class="card-questions">
+        <li>
+          <span class="q-num">Q1</span>
+          <span>No tienen etiquetas de "falla próxima". ¿Cómo atacan esto — con supervisado o no supervisado?</span>
+        </li>
+        <li>
+          <span class="q-num">Q2</span>
+          <span>¿Qué significa una "anomalía" en este contexto? ¿Cómo la detectaría un modelo?</span>
+        </li>
+        <li>
+          <span class="q-num">Q3</span>
+          <span>Si el modelo genera demasiadas falsas alarmas, los operadores dejan de hacerle caso. ¿Cómo resolverían ese problema?</span>
+        </li>
+      </ul>
+      <div class="card-footer">
+        <div class="card-algo">
+          <span class="algo-tag">DBSCAN</span>
+          <span class="algo-tag">K-Means</span>
+          <span class="algo-tag">SVR</span>
+        </div>
+        <div class="card-time">5 min debate<br>2 min presenta</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TARJETA 3: SALUD -->
+  <div class="card health">
+    <div class="card-bar"></div>
+    <div class="card-inner">
+      <div class="card-header">
+        <span class="card-industry">Salud</span>
+        <span class="card-num">03</span>
+      </div>
+      <div class="card-title">El sistema que<br>prioriza urgencias</div>
+      <p class="card-scenario">
+        Un hospital del IMSS recibe 300 pacientes diarios en urgencias. Quieren un modelo que clasifique automáticamente la gravedad al momento del triage, usando síntomas, signos vitales y edad, para reducir el tiempo de espera de los casos críticos.
+      </p>
+      <div class="card-divider"></div>
+      <div class="card-questions-label">Discutan esto</div>
+      <ul class="card-questions">
+        <li>
+          <span class="q-num">Q1</span>
+          <span>¿Cómo armarían el dataset de entrenamiento? ¿Qué columnas tendría y cuál sería el label?</span>
+        </li>
+        <li>
+          <span class="q-num">Q2</span>
+          <span>¿Qué es peor aquí: un falso positivo (clasificar leve como grave) o un falso negativo (clasificar grave como leve)?</span>
+        </li>
+        <li>
+          <span class="q-num">Q3</span>
+          <span>¿Le darían la decisión final al modelo o solo lo usarían como apoyo al médico? Argumenten.</span>
+        </li>
+      </ul>
+      <div class="card-footer">
+        <div class="card-algo">
+          <span class="algo-tag">Decision Tree</span>
+          <span class="algo-tag">SVM</span>
+          <span class="algo-tag">KNN</span>
+        </div>
+        <div class="card-time">5 min debate<br>2 min presenta</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TARJETA 4: RETAIL -->
+  <div class="card health">
+    <div class="card-bar"></div>
+    <div class="card-inner">
+      <div class="card-header">
+        <span class="card-industry">Retail / E-commerce</span>
+        <span class="card-num">04</span>
+      </div>
+      <div class="card-title">Los clusters que<br>nadie esperaba</div>
+      <p class="card-scenario">
+        Una cadena de tiendas de conveniencia en México aplica K-Means a su base de clientes usando datos de compras. El modelo encuentra 5 grupos — pero uno de ellos no tiene ningún nombre obvio: compran de todo, a cualquier hora, sin patrón claro.
+      </p>
+      <div class="card-divider"></div>
+      <div class="card-questions-label">Discutan esto</div>
+      <ul class="card-questions">
+        <li>
+          <span class="q-num">Q1</span>
+          <span>¿Ese cluster sin nombre es un problema del modelo o una oportunidad de negocio?</span>
+        </li>
+        <li>
+          <span class="q-num">Q2</span>
+          <span>¿Cómo decidirían si usar K-Means con 4 clusters o con 6? ¿Qué criterio usarían?</span>
+        </li>
+        <li>
+          <span class="q-num">Q3</span>
+          <span>¿Para qué le sirve este análisis al área de marketing vs al área de logística?</span>
+        </li>
+      </ul>
+      <div class="card-footer">
+        <div class="card-algo">
+          <span class="algo-tag">K-Means</span>
+          <span class="algo-tag">Jerárquico</span>
+          <span class="algo-tag">GMM</span>
+        </div>
+        <div class="card-time">5 min debate<br>2 min presenta</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TARJETA 5: TECH / SOFTWARE -->
+  <div class="card tech">
+    <div class="card-bar"></div>
+    <div class="card-inner">
+      <div class="card-header">
+        <span class="card-industry">Tecnología / Datos</span>
+        <span class="card-num">05</span>
+      </div>
+      <div class="card-title">El modelo justo<br>¿existe?</div>
+      <p class="card-scenario">
+        Una fintech mexicana entrena un modelo para aprobar o rechazar préstamos. El modelo tiene 92% de accuracy — pero cuando lo auditan, descubren que rechaza a hombres jóvenes de ciertas colonias el doble que al promedio, aunque sus ingresos sean similares.
+      </p>
+      <div class="card-divider"></div>
+      <div class="card-questions-label">Discutan esto</div>
+      <ul class="card-questions">
+        <li>
+          <span class="q-num">Q1</span>
+          <span>El modelo "aprendió" eso de los datos históricos. ¿Es culpa del modelo, de los datos, o de quienes lo diseñaron?</span>
+        </li>
+        <li>
+          <span class="q-num">Q2</span>
+          <span>¿Cambiarían el modelo aunque eso baje el accuracy del 92% al 87%? ¿Cuál es el costo real de cada opción?</span>
+        </li>
+        <li>
+          <span class="q-num">Q3</span>
+          <span>¿Qué responsabilidad legal y ética tiene el equipo de ML que construyó esto?</span>
+        </li>
+      </ul>
+      <div class="card-footer">
+        <div class="card-algo">
+          <span class="algo-tag">Logistic Regression</span>
+          <span class="algo-tag">Ridge</span>
+          <span class="algo-tag">SVM</span>
+        </div>
+        <div class="card-time">5 min debate<br>2 min presenta</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TARJETA 6: MANUFACTURA -->
+  <div class="card mfg">
+    <div class="card-bar"></div>
+    <div class="card-inner">
+      <div class="card-header">
+        <span class="card-industry">Manufactura / Supply Chain</span>
+        <span class="card-num">06</span>
+      </div>
+      <div class="card-title">Predecir la demanda<br>o morir en el intento</div>
+      <p class="card-scenario">
+        Una empresa de alimentos en Guadalajara quiere predecir cuántas unidades de cada producto venderá la semana siguiente, para no tener sobrestock (que caduca) ni faltante (que pierde ventas). Tienen 3 años de historial de ventas por tienda.
+      </p>
+      <div class="card-divider"></div>
+      <div class="card-questions-label">Discutan esto</div>
+      <ul class="card-questions">
+        <li>
+          <span class="q-num">Q1</span>
+          <span>¿Qué variables externas agregarían al modelo además del historial de ventas?</span>
+        </li>
+        <li>
+          <span class="q-num">Q2</span>
+          <span>¿Construirían un solo modelo para todos los productos o uno por producto? ¿Cuál es el tradeoff?</span>
+        </li>
+        <li>
+          <span class="q-num">Q3</span>
+          <span>En semana santa o navidad el modelo falla porque son eventos raros. ¿Cómo lo manejarían?</span>
+        </li>
+      </ul>
+      <div class="card-footer">
+        <div class="card-algo">
+          <span class="algo-tag">SVR</span>
+          <span class="algo-tag">Polynomial Reg.</span>
+          <span class="algo-tag">Ridge</span>
+        </div>
+        <div class="card-time">5 min debate<br>2 min presenta</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TIMER GUIDE -->
+<div class="timer-section">
+  <div class="timer-label">Tiempo<br>total</div>
+  <div class="timer-flow">
+    <div class="t-step">
+      <div class="t-min">1'</div>
+      <div class="t-desc">Leer la tarjeta</div>
+    </div>
+    <div class="t-arrow">→</div>
+    <div class="t-step">
+      <div class="t-min">5'</div>
+      <div class="t-desc">Debatir en pareja</div>
+    </div>
+    <div class="t-arrow">→</div>
+    <div class="t-step">
+      <div class="t-min">2'</div>
+      <div class="t-desc">Cada pareja presenta</div>
+    </div>
+    <div class="t-arrow">→</div>
+    <div class="t-step">
+      <div class="t-min">2'</div>
+      <div class="t-desc">El grupo rebate</div>
+    </div>
+    <div class="t-arrow">→</div>
+    <div class="t-step">
+      <div class="t-min">1'</div>
+      <div class="t-desc">Tú cierras</div>
+    </div>
+  </div>
+  <div class="timer-total">
+    <div class="big">20'</div>
+    <div class="lbl">minutos totales</div>
+  </div>
+</div>
+
+</body>
+</html>
